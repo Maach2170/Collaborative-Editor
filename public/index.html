@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Editor</title>
+    <style>
+        #editor {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Collaborative Editor</h1>
+    <div id="editor" contenteditable="true"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const editor = document.getElementById('editor');
+
+        // Connect to the Socket.IO server
+        const socket = io();
+
+        // Listen for changes in the contenteditable div
+        editor.addEventListener('input', () => {
+            const newContent = editor.innerHTML;
+            socket.emit('content-change', newContent);
+        });
+
+        // Update the content when receiving changes from other users
+        socket.on('update-content', (newContent) => {
+            editor.innerHTML = newContent;
+        });
+    </script>
+</body>
+</html>
